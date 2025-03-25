@@ -1,0 +1,16 @@
+[project]
+name = "academy"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bcrypt>=4.3.0",
+    "fastapi[standard]>=0.115.11",
+    "jwt>=1.3.1",
+    "phonenumbers>=8.13.55",
+    "pydantic-settings>=2.8.1",
+    "pyjwt>=2.10.1",
+    "sqlmodel>=0.0.23",
+    "uuid>=1.30",
+]
