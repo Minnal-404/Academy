@@ -4,3 +4,4 @@ sqlmodel
 pydantic[email]
 pydantic-settings
 jwt
+PyJWT
