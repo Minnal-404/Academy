@@ -1,8 +1,8 @@
 
 from .user_schemas import  UserCreate, UUID, Login
-from utils.imports import HTTPException, status, re
+from utils.imports import HTTPException, status, re, EmailStr
 from .user_models import UserDAO
-from .auth import verify_password, Request, bcrypt, jwt_token_decrypt
+from utils.auth import verify_password, Request, bcrypt, jwt_token_decrypt
 
 
 
@@ -14,7 +14,7 @@ class UserValidator():
         if len(user_create.name) < 3:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Name Must Contain Atleat 3 Characters")
         
-        if len(user_create.name) > 50:
+        if len(user_create.name) > 20:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Name Cannot Contain More Than 50 Characters")
         
         # is_email_exists_in_academy = AcademyUserDAO.get_academy_user_by_email(user_create.email)
@@ -49,7 +49,7 @@ class UserValidator():
         if not role == "academy" and not role == "student" and not role == "company":
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized User")
         
-    def validate_user_email(email: str):
+    def validate_user_email(email: EmailStr):
         if not email:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email Is Required")
         
@@ -83,6 +83,8 @@ class UserValidator():
             jwt_token=bearer_token.split(" ")[1]
             payload=jwt_token_decrypt(jwt_token)
             email=payload["email"]
-        except:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid Token")
+        except ValueError:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid Token, {ValueError}")
         UserValidator.validate_user_email(email)
+        
+    

@@ -1,11 +1,8 @@
 
-from utils.database import SQLModel, Field, Session, select, engine
-from utils.imports import datetime, timezone, uuid4
+from utils.database import SQLModel, Field, Session, select, engine, Relationship
+from utils.imports import datetime, uuid4, generate_time_stamps, Optional, List
 from .user_schemas import UUID, UserCreate, EmailStr
 
-
-def generate_time_stamps():
-    return datetime.now(timezone.utc)
 
 
 class UserBase(SQLModel):
@@ -23,6 +20,11 @@ class User(UserBase, table = True):
     id: UUID = Field(primary_key=True, default_factory=uuid4)
     created_at: datetime = Field(default_factory=generate_time_stamps)
     updated_at: datetime = Field(default_factory=generate_time_stamps)
+    
+    english: Optional["English"] = Relationship(back_populates="user")
+    language: Optional["Language"] = Relationship(back_populates="user")
+    projects: List["Project"] = Relationship(back_populates="user")
+
 
 
 class UserDAO():
@@ -47,6 +49,18 @@ class UserDAO():
         with Session(engine) as session:
             users = session.exec(select(User)).all()
         return users
+    
+    def get_all_student_users():
+        with Session(engine) as session:
+            users = session.exec(select(User).where(User.role == "student")).all()
+        return users
+    
+    def get_all_company_users():
+        with Session(engine) as session:
+            users = session.exec(select(User).where(User.role == "company")).all()
+        return users
+    
+
     
     def delete_user(id: UUID):
         with Session(engine) as session:

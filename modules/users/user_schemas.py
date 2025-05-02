@@ -10,13 +10,21 @@ class UserCreate(BaseModel):
     role: str
     
 class UserResponse(BaseModel):
-    id: UUID
     name: str
     email: EmailStr
     phone_number: str
     token: str
 
+class UserRes(BaseModel):
+    name: str
+    email: EmailStr
+    phone_number: str
+
 class Login(BaseModel):
     email: EmailStr
     password: str
+    role: str
+
+class Payload(BaseModel):
+    id: UUID
     role: str

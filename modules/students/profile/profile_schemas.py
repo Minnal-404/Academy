@@ -9,5 +9,6 @@ class UrlValidator(BaseModel):
     url: HttpUrl
 
 class ProfileCreate(BaseModel):
+    language: str
     projects: List[ProjectSchema]
     english: EnglishSchema

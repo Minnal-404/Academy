@@ -1,9 +1,13 @@
 from pydantic_settings import BaseSettings
 import jwt
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
+
 import bcrypt
-from fastapi import Request,HTTPException
+from fastapi import Request,HTTPException, status
 from sqlmodel import select
-from .user_models import UserDAO
+from modules.users.user_models import UserDAO
+from datetime import datetime, timedelta, timezone
+
 
 
 Algorithm='HS256'
@@ -12,22 +16,27 @@ class Secret_key(BaseSettings):
     class Config:
         env_file = ".env"
 secret_key=Secret_key()
-def jwt_token_encrypt(UserDetial):
+def jwt_token_encrypt(UserDetial, expires_delta: timedelta = timedelta(days=1)):
+    expire = datetime.now(timezone.utc) + expires_delta
+
     payload={
-        "name":UserDetial.name,
         "email":UserDetial.email,
-        "phone":UserDetial.phone,
-        "role": UserDetial.role
+        "exp": expire,
+        "iat": datetime.now(timezone.utc)
     }
     token=jwt.encode(payload,secret_key.secret_key,algorithm=Algorithm)
+    
     return token
 
 def jwt_token_decrypt(jwt_token):
-    payload=jwt.decode(jwt_token,secret_key.secret_key,algorithms=Algorithm)
-    return payload
+    try:
+        payload = jwt.decode(jwt_token, secret_key.secret_key, algorithms=[Algorithm])
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
 
 def authenticate(request: Request):
-    from .user_validator import UserValidator
+    from modules.users.user_validator import UserValidator
     UserValidator.validate_request(request)
     bearer_token=request.headers.get("Authorization")
     jwt_token=bearer_token.split(" ")[1]
@@ -43,3 +52,4 @@ def hash_password(password: str):
 
 def verify_password(password: str, stored_hashed_password: str):
     return bcrypt.checkpw(password.encode('utf-8'), stored_hashed_password)
+
