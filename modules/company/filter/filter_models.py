@@ -8,6 +8,3 @@ from ...students.profile.projects.project_models import Project
 
 
 
-
-class FilterDAO():
-        
