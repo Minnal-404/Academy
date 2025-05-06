@@ -1,6 +1,6 @@
 
 
-from utils.imports import BaseModel, UUID, List, Optional
+from utils.imports import BaseModel, UUID, List, Optional, ConfigDict
 
 
 
@@ -17,6 +17,9 @@ class ProjectResponse(BaseModel):
     is_approved: bool
     is_rejected: bool
     message: Optional[str] = None
+    
+    model_config = ConfigDict(from_attributes=True)
+
 
 class ProjectList( BaseModel):
     projects: List[ProjectSchema]

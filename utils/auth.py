@@ -14,7 +14,9 @@ class Secret_key(BaseSettings):
     secret_key:str
     class Config:
         env_file = ".env"
+        
 secret_key=Secret_key()
+
 def jwt_token_encrypt(UserDetial, expires_delta: timedelta = timedelta(days=1)):
     expire = datetime.now(timezone.utc) + expires_delta
 
@@ -33,6 +35,9 @@ def jwt_token_decrypt(jwt_token):
         return payload
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
+    except:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token")
+        
 
 def authenticate(request: Request):
     from modules.users.user_validator import UserValidator

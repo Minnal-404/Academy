@@ -5,7 +5,7 @@ from utils.validator import Validator
 from ...students.profile.english.english_services import EnglishServices
 from ...students.profile.language.language_services import LanguageServices
 # from .filter_models import FilterDAO
-# from .filter_services import FilterServices
+from .filter_services import FilterServices
 
 
 filter_router = APIRouter(
@@ -18,18 +18,17 @@ def rank_filter(req: Request, rank: str):
     user = authenticate(req)
     Validator.validate_roles(user.role, "company")
 
-    return EnglishServices.rank_filter(rank)
+    return FilterServices.rank_filter(rank, user.id)
 
 @filter_router.get("/language_filter/")
-def rank_filter(req: Request, language: str):
+def language_filter(req: Request, language: str):
     user = authenticate(req)
     Validator.validate_roles(user.role, "company")
 
-    return LanguageServices.language_filter(language)
+    return FilterServices.language_filter(language, user.id)
 
-# @filter_router.get("/filter_profiles")
-# def filter_profiles(
-#     rank: Optional[str] = Query(None),
-#     tech: Optional[str] = Query(None)
-# ):
-#     return FilterServices.filter_profiles(rank, tech)
+@filter_router.get("/rank_and_language_filter/")
+def rank_and_language_filter(req: Request, rank: str, language: str):
+    user = authenticate(req)
+    Validator.validate_roles(user.role, "company")
+    return FilterServices.rank_and_language_filter(rank, language, user.id)

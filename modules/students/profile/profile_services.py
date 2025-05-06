@@ -71,13 +71,14 @@ class ProfileServices():
         for u in users:
             
             profile = ProfileDAO.get_full_profile_by_user_id(u.id)
-            like_id = str(company_id)+str(u.id)
-            is_liked = LikeServices.get_like(like_id)
-            if is_liked:
-                profile['is_liked'] = True
-            else:
-                profile['is_liked'] = False
-            profiles.append(profile)
+            if profile:
+                like_id = str(company_id)+str(u.id)
+                is_liked = LikeServices.get_like(like_id)
+                if is_liked:
+                    profile['is_liked'] = True
+                else:
+                    profile['is_liked'] = False
+                profiles.append(profile)
         return {"profiles": profiles}
         
     

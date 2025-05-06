@@ -1,6 +1,6 @@
 
 
-from utils.imports import BaseModel, EmailStr, UUID
+from utils.imports import BaseModel, EmailStr, UUID, ConfigDict
 
 class UserCreate(BaseModel):
     name: str
@@ -19,6 +19,9 @@ class UserRes(BaseModel):
     name: str
     email: EmailStr
     phone_number: str
+    
+    model_config = ConfigDict(from_attributes=True)
+
 
 class Login(BaseModel):
     email: EmailStr

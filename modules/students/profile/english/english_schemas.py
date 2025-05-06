@@ -1,6 +1,6 @@
 
 
-from utils.imports import BaseModel, UUID, Optional
+from utils.imports import BaseModel, UUID, Optional, ConfigDict
 
 
 
@@ -17,6 +17,9 @@ class EnglishResponse(BaseModel):
     is_approved: bool
     is_rejected: bool
     message: Optional[str] = None
+    
+    model_config = ConfigDict(from_attributes=True)
+
 
 class EnglishUpdate(BaseModel):
     rank: str = None

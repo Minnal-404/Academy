@@ -52,10 +52,10 @@ class ProjectDAO():
         with Session(engine) as session:
             projects = session.exec(select(Project).where((Project.student_id == id) & (Project.is_approved == True) & (Project.is_rejected == False))).all()
         return projects
-    def get_approved_projects_by_student_id(id: UUID):
-        with Session(engine) as session:
-            projects = session.exec(select(Project).where((Project.student_id == id) & (Project.is_approved == True) & (Project.is_rejected == False))).all()
-        return projects
+    # def get_approved_projects_by_student_id(id: UUID):
+    #     with Session(engine) as session:
+    #         projects = session.exec(select(Project).where((Project.student_id == id) & (Project.is_approved == True) & (Project.is_rejected == False))).all()
+    #     return projects
 
     def delete_project(project_to_delete):
         with Session(engine) as session:
